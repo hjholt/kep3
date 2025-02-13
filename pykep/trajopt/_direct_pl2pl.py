@@ -44,6 +44,7 @@ class direct_pl2pl:
         r_scaling=_pk.AU,
         v_scaling=_pk.EARTH_VELOCITY,
         with_gradient=True,
+        high_fidelity=False,
     ):
         """direct_pl2pl(pls, plf, ms = 1500, mu=_pk.MU_SUN, max_thrust=0.12, isp=3000, t0_bounds=[6700.0, 6800.0], tof_bounds=[200.0, 300.0], mf_bounds=[1300.0, 1500.0], vinfs=3.0, vinff=0.0, nseg=10, cut=0.6, mass_scaling=1500, r_scaling=pk.AU, v_scaling=pk.EARTH_VELOCITY, with_gradient=True)
 
@@ -84,7 +85,11 @@ class direct_pl2pl:
 
         """
         # We add as data member one single Sims-Flanagan leg and set it using problem data
-        self.leg = _pk.leg.sims_flanagan()
+        if high_fidelity:
+            self.leg = _pk.leg.sims_flanagan_hf()
+        else:
+            self.leg = _pk.leg.sims_flanagan()
+            
         self.leg.ms = ms
         self.leg.max_thrust = max_thrust
         self.leg.isp = isp

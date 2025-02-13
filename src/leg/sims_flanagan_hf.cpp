@@ -180,6 +180,10 @@ void sims_flanagan_hf::set_throttles(const std::vector<double> &throttles)
     *(m_tas.get_pars_data()+3l) = m_thrusts[1];
     *(m_tas.get_pars_data()+4l) = m_thrusts[2];
 
+    *(m_tas_var.get_pars_data()+2l) = m_thrusts[0];
+    *(m_tas_var.get_pars_data()+3l) = m_thrusts[1];
+    *(m_tas_var.get_pars_data()+4l) = m_thrusts[2];
+
 }
 void sims_flanagan_hf::set_throttles(const std::vector<double>::const_iterator &it1,
                                      const std::vector<double>::const_iterator &it2)
@@ -203,6 +207,10 @@ void sims_flanagan_hf::set_throttles(const std::vector<double>::const_iterator &
     *(m_tas.get_pars_data()+3l) = m_thrusts[1];
     *(m_tas.get_pars_data()+4l) = m_thrusts[2];
 
+    *(m_tas_var.get_pars_data()+2l) = m_thrusts[0];
+    *(m_tas_var.get_pars_data()+3l) = m_thrusts[1];
+    *(m_tas_var.get_pars_data()+4l) = m_thrusts[2];
+
 }
 void sims_flanagan_hf::set_rvf(const std::array<std::array<double, 3>, 2> &rv)
 {
@@ -222,13 +230,15 @@ void sims_flanagan_hf::set_isp(double isp)
 {
     kep3::leg::_check_isp(isp);
     m_isp = isp;
-    *(m_tas.get_pars_data()+1l) = isp;
+    *(m_tas.get_pars_data()+1l) = isp * kep3::G0;
+    *(m_tas_var.get_pars_data()+1l) = isp * kep3::G0;
 }
 void sims_flanagan_hf::set_mu(double mu)
 {
     kep3::leg::_check_mu(mu);
     m_mu = mu;
     *m_tas.get_pars_data() = mu;
+    *m_tas_var.get_pars_data() = mu;
 }
 void sims_flanagan_hf::set_cut(double cut)
 {
@@ -435,12 +445,13 @@ std::array<double, 7> sims_flanagan_hf::compute_mismatch_constraints() const
         if (status != heyoka::taylor_outcome::time_limit) { // LCOV_EXCL_START
             fmt::print("thrust: [{}, {}, {}]\n", *(m_tas.get_pars_data()+2l), *(m_tas.get_pars_data() + 3l),
                        *(m_tas.get_pars_data() + 4l));
+            fmt::print("params: {}\n", m_tas.get_pars() );           
             fmt::print("taylor_outcome: {}\n", status);
             fmt::print("state: {}\n", m_tas.get_state());
             fmt::print("reached time: {}\n", m_tas.get_time());
             fmt::print("requested time: {}\n", (i + 1) * prop_seg_duration);
             throw std::domain_error(
-                "stark_problem: failure to reach the final time requested during a propagation."); 
+                "stark_problem: failure to reach the final time requested during a propagation. (Forward)"); 
         } // LCOV_EXCL_STOP
     }
 
@@ -463,12 +474,13 @@ std::array<double, 7> sims_flanagan_hf::compute_mismatch_constraints() const
         if (status != heyoka::taylor_outcome::time_limit) { // LCOV_EXCL_START
             fmt::print("thrust: [{}, {}, {}]\n", *(m_tas.get_pars_data()+2l), *(m_tas.get_pars_data() + 3l),
                        *(m_tas.get_pars_data() + 4l));
+            fmt::print("params: {}\n", m_tas.get_pars() );   
             fmt::print("taylor_outcome: {}\n", status);
             fmt::print("state: {}\n", m_tas.get_state());
             fmt::print("reached time: {}\n", m_tas.get_time());
             fmt::print("requested time: {}\n", (i + 1) * prop_seg_duration);
             throw std::domain_error(
-                "stark_problem: failure to reach the final time requested during a propagation."); 
+                "stark_problem: failure to reach the final time requested during a propagation. (Backward)"); 
         } // LCOV_EXCL_STOP
     }
 
