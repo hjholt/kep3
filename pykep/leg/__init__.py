@@ -21,5 +21,9 @@ sims_flanagan_hf = _core._sims_flanagan_hf
 sims_flanagan_hf.__name__ = "sims_flanagan_hf"
 sims_flanagan_hf.__module__ = "leg"
 
+sims_flanagan_hf_alpha = _core._sims_flanagan_hf_alpha
+sims_flanagan_hf_alpha.__name__ = "sims_flanagan_hf_alpha"
+sims_flanagan_hf_alpha.__module__ = "leg"
+
 # Removing core from the list of imported symbols.
 del _core

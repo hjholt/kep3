@@ -350,4 +350,8 @@ def add_sf_hf_leg(
             s=5,
         )
 
+    print('State History:')
+    print('state_history_fwd', state_history_fwd[0,:], state_history_fwd[-1,:])
+    print('state_history_bck', state_history_bck[0,:], state_history_bck[-1,:])
+
     return ax
