@@ -357,10 +357,10 @@ class direct_pl2pl:
                 ax,
                 sf,
                 units=units,
-                show_throttles=True,
+                show_throttles=show_throttles,
                 length=length,
-                show_gridpoints=False,
-                arrow_length_ratio=1,
+                show_gridpoints=show_gridpoints,
+                arrow_length_ratio=arrow_length_ratio,
                 **kwargs,
             )
         else:

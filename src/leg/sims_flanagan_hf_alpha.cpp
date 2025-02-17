@@ -469,19 +469,19 @@ std::array<double, 7> sims_flanagan_hf_alpha::compute_mismatch_constraints() con
         // fmt::print("F {} time: {}\n", i, m_tas.get_time());   
 
         if (status != heyoka::taylor_outcome::time_limit) { // LCOV_EXCL_START
+            fmt::print("Forward: taylor_outcome: {}\n", status);
             fmt::print("thrust: [{}, {}, {}]\n", *(m_tas.get_pars_data()+2l), *(m_tas.get_pars_data() + 3l),
                        *(m_tas.get_pars_data() + 4l));
             fmt::print("params: {}\n", m_tas.get_pars() );   
             fmt::print("m_thrusts: {}\n", m_thrusts );     
             fmt::print("m_throttles: {}\n", m_throttles );     
             fmt::print("m_talphas: {}\n", m_talphas );     
-            fmt::print("taylor_outcome: {}\n", status);
             fmt::print("state: {}\n", m_tas.get_state());
             fmt::print("reached time: {}\n", m_tas.get_time());
             fmt::print("m_tof: {}\n", m_tof);
             fmt::print("requested time: {}\n", (i + 1) * prop_seg_duration);
-            throw std::domain_error(
-                "stark_problem: failure to reach the final time requested during a propagation. (Forward)"); 
+            // throw std::domain_error(
+            //     "stark_problem: failure to reach the final time requested during a propagation. (Forward)"); 
         } // LCOV_EXCL_STOP
     }
 
@@ -508,15 +508,15 @@ std::array<double, 7> sims_flanagan_hf_alpha::compute_mismatch_constraints() con
         // fmt::print("B {} time: {}\n", i, m_tas.get_time());
         
         if (status != heyoka::taylor_outcome::time_limit) { // LCOV_EXCL_START
+            fmt::print("Back: taylor_outcome: {}\n", status);
             fmt::print("thrust: [{}, {}, {}]\n", *(m_tas.get_pars_data()+2l), *(m_tas.get_pars_data() + 3l),
                        *(m_tas.get_pars_data() + 4l));
             fmt::print("params: {}\n", m_tas.get_pars() );   
-            fmt::print("taylor_outcome: {}\n", status);
             fmt::print("state: {}\n", m_tas.get_state());
             fmt::print("reached time: {}\n", m_tas.get_time());
             fmt::print("requested time: {}\n", (i + 1) * prop_seg_duration);
-            throw std::domain_error(
-                "stark_problem: failure to reach the final time requested during a propagation. (Backward)"); 
+            // throw std::domain_error(
+            //     "stark_problem: failure to reach the final time requested during a propagation. (Backward)"); 
         } // LCOV_EXCL_STOP
     }
 
@@ -705,6 +705,7 @@ sims_flanagan_hf_alpha::compute_all_gradients() const
         std::copy(m_thrusts.begin() + i * 3l, m_thrusts.begin() + 3 * (i + 1l), m_tas_var.get_pars_data() + 2l);
         // ... and integrate
         auto [status, min_h, max_h, nsteps, _1, _2] = m_tas_var.propagate_until((i + 1) * prop_seg_duration);
+        
         if (status != heyoka::taylor_outcome::time_limit) { // LCOV_EXCL_START
             fmt::print("thrust: [{}, {}, {}]\n", *(m_tas.get_pars_data()+2l), *(m_tas.get_pars_data() + 3l),
                        *(m_tas.get_pars_data() + 4l));
@@ -715,6 +716,7 @@ sims_flanagan_hf_alpha::compute_all_gradients() const
             throw std::domain_error(
                 "stark_problem: failure to reach the final time requested during a propagation."); 
         } // LCOV_EXCL_STOP
+
         // Save the variational state variables to respective arrays
         std::copy(m_tas_var.get_state().begin(), m_tas_var.get_state().begin() + 7, xf_per_seg[i].begin());
         for (auto j = 0; j < 7; ++j) {
