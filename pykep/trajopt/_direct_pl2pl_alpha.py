@@ -114,15 +114,18 @@ class direct_pl2pl_alpha:
     # z = [t0, mf, Vsx, Vsy, Vsz, Vfx, Vfy, Vfz, throttles, tof]
     def get_bounds(self):
         alpha_mid = _pk.direct2alpha([1/self.nseg]*self.nseg)[0][0]
+        factor = 0.5
+        alpha_low = _pk.direct2alpha([1/(self.nseg*factor)] * int(self.nseg*factor))[0][0]
+        alpha_high = _pk.direct2alpha([1/(self.nseg/factor)] * int(self.nseg/factor))[0][0]
 
         lb = (
             [self.t0_bounds[0], self.mf_bounds[0]]
             + [-self.vinfs] * 3  # in m/s.
             + [-self.vinff] * 3  # in m/s.
-            + [alpha_mid-0.2] * self.nseg
-            # + [0.5] * self.nseg
-            # + [0.6] * self.nseg
-            # + [0.7] * self.nseg
+            # + [1e-3] * self.nseg
+            # + [alpha_mid-0.2] * self.nseg
+            # + [alpha_mid-0.1] * self.nseg
+            + [alpha_low] * self.nseg
             + [-1, -1, -1] * self.nseg
             + [self.tof_bounds[0]]
         )
@@ -130,10 +133,10 @@ class direct_pl2pl_alpha:
             [self.t0_bounds[1], self.mf_bounds[1]]
             + [self.vinfs] * 3  # in m/s.
             + [self.vinff] * 3  # in m/s.
-            # + [0.8] * self.nseg
-            # + [0.9] * self.nseg
-            # + [1.0-1e-3] * self.nseg
-            + [min(alpha_mid+0.2,1-1e-3)] * self.nseg
+            + [min(alpha_high,1-1e-3)] * self.nseg
+            # + [min(alpha_mid+0.1,1-1e-3)] * self.nseg
+            # + [min(alpha_mid+0.2,1-1e-3)] * self.nseg
+            # + [1-1e-3] * self.nseg
             + [1, 1, 1] * self.nseg
             + [self.tof_bounds[1]]
         )
@@ -179,8 +182,11 @@ class direct_pl2pl_alpha:
 
         # 2 - We compute the constraints violations (mismatch+throttle)
         self._set_leg_from_x(x)  # set the leg
-        ceq = self.leg.compute_mismatch_constraints()
-        cineq = self.leg.compute_throttle_constraints()
+        try:
+            ceq = self.leg.compute_mismatch_constraints()
+            cineq = self.leg.compute_throttle_constraints()
+        except:
+            print(self.leg.talphas, self.lef.tof)
 
         # 3 - We add the departure vinfs constraint (quadratic)
         cineq = cineq + [

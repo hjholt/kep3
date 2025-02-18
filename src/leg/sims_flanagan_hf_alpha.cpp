@@ -468,21 +468,26 @@ std::array<double, 7> sims_flanagan_hf_alpha::compute_mismatch_constraints() con
         auto [status, min_h, max_h, nsteps, _1, _2] = m_tas.propagate_until(prop_seg_temp);
         // fmt::print("F {} time: {}\n", i, m_tas.get_time());   
 
-        if (status != heyoka::taylor_outcome::time_limit) { // LCOV_EXCL_START
-            fmt::print("Forward: taylor_outcome: {}\n", status);
-            fmt::print("thrust: [{}, {}, {}]\n", *(m_tas.get_pars_data()+2l), *(m_tas.get_pars_data() + 3l),
-                       *(m_tas.get_pars_data() + 4l));
-            fmt::print("params: {}\n", m_tas.get_pars() );   
-            fmt::print("m_thrusts: {}\n", m_thrusts );     
-            fmt::print("m_throttles: {}\n", m_throttles );     
-            fmt::print("m_talphas: {}\n", m_talphas );     
-            fmt::print("state: {}\n", m_tas.get_state());
-            fmt::print("reached time: {}\n", m_tas.get_time());
-            fmt::print("m_tof: {}\n", m_tof);
-            fmt::print("requested time: {}\n", (i + 1) * prop_seg_duration);
-            // throw std::domain_error(
-            //     "stark_problem: failure to reach the final time requested during a propagation. (Forward)"); 
-        } // LCOV_EXCL_STOP
+        if (m_tas.get_state()[6] < 0.5*(*m_rvmf.begin()+6) ) {
+            fmt::print("m_rvmf: {} {}\n", (*m_rvmf.begin()+6), m_tas.get_state()[6] );  
+            break;
+        }
+
+        // if (status != heyoka::taylor_outcome::time_limit) { // LCOV_EXCL_START
+        //     fmt::print("Forward: taylor_outcome: {}\n", status);
+        //     fmt::print("thrust: [{}, {}, {}]\n", *(m_tas.get_pars_data()+2l), *(m_tas.get_pars_data() + 3l),
+        //                *(m_tas.get_pars_data() + 4l));
+        //     fmt::print("params: {}\n", m_tas.get_pars() );   
+        //     fmt::print("m_thrusts: {}\n", m_thrusts );     
+        //     fmt::print("m_throttles: {}\n", m_throttles );     
+        //     fmt::print("m_talphas: {}\n", m_talphas );     
+        //     fmt::print("state: {}\n", m_tas.get_state());
+        //     fmt::print("reached time: {}\n", m_tas.get_time());
+        //     fmt::print("m_tof: {}\n", m_tof);
+        //     fmt::print("requested time: {}\n", (i + 1) * prop_seg_duration);
+        //     throw std::domain_error(
+        //         "stark_problem: failure to reach the final time requested during a propagation. (Forward)"); 
+        // } // LCOV_EXCL_STOP
     }
 
     // Set fwd final state
@@ -507,17 +512,17 @@ std::array<double, 7> sims_flanagan_hf_alpha::compute_mismatch_constraints() con
         auto [status, min_h, max_h, nsteps, _1, _2] = m_tas.propagate_until(prop_seg_temp);
         // fmt::print("B {} time: {}\n", i, m_tas.get_time());
         
-        if (status != heyoka::taylor_outcome::time_limit) { // LCOV_EXCL_START
-            fmt::print("Back: taylor_outcome: {}\n", status);
-            fmt::print("thrust: [{}, {}, {}]\n", *(m_tas.get_pars_data()+2l), *(m_tas.get_pars_data() + 3l),
-                       *(m_tas.get_pars_data() + 4l));
-            fmt::print("params: {}\n", m_tas.get_pars() );   
-            fmt::print("state: {}\n", m_tas.get_state());
-            fmt::print("reached time: {}\n", m_tas.get_time());
-            fmt::print("requested time: {}\n", (i + 1) * prop_seg_duration);
-            // throw std::domain_error(
-            //     "stark_problem: failure to reach the final time requested during a propagation. (Backward)"); 
-        } // LCOV_EXCL_STOP
+        // if (status != heyoka::taylor_outcome::time_limit) { // LCOV_EXCL_START
+        //     fmt::print("Back: taylor_outcome: {}\n", status);
+        //     fmt::print("thrust: [{}, {}, {}]\n", *(m_tas.get_pars_data()+2l), *(m_tas.get_pars_data() + 3l),
+        //                *(m_tas.get_pars_data() + 4l));
+        //     fmt::print("params: {}\n", m_tas.get_pars() );   
+        //     fmt::print("state: {}\n", m_tas.get_state());
+        //     fmt::print("reached time: {}\n", m_tas.get_time());
+        //     fmt::print("requested time: {}\n", (i + 1) * prop_seg_duration);
+        //     throw std::domain_error(
+        //         "stark_problem: failure to reach the final time requested during a propagation. (Backward)"); 
+        // } // LCOV_EXCL_STOP
     }
 
     return {rvm_fwd_final[0] - m_tas.get_state()[0], rvm_fwd_final[1] - m_tas.get_state()[1],
