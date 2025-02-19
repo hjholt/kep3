@@ -11,6 +11,7 @@ def add_sf_leg(
     show_midpoints=False,
     show_gridpoints=False,
     show_throttles=False,
+    use_alpha=False,
     length=0.1,
     arrow_length_ratio=0.05,
     **kwargs
@@ -51,8 +52,9 @@ def add_sf_leg(
     nseg_fwd = sf.nseg_fwd
     nseg_bck = sf.nseg_bck
     
-    dt = sf.tof / nseg
-    c = sf.max_thrust * dt
+    if not use_alpha:
+        dt = sf.tof / nseg
+        c = sf.max_thrust * dt
 
     # We start the forward pass of the Sims-Flanagan model------------------------------------------------------------------------
     pos_fwd = []
@@ -64,6 +66,10 @@ def add_sf_leg(
     pos_fwd.append(rv[0])
 
     for i in range(nseg_fwd):
+        if use_alpha:
+            dt = sf.talphas[i]
+            c = sf.max_thrust * dt
+
         # compute the dv
         throttles = sf.throttles[3 * i : 3 * i + 3]
         throttles_fwd.append(throttles)
@@ -130,6 +136,9 @@ def add_sf_leg(
     pos_bck.append(rv[0])
 
     for i in range(nseg_bck):
+        if use_alpha:
+            dt = sf.talphas[nseg-i-1]
+            c = sf.max_thrust * dt
         # compute the dv (first non dimensional)
         throttles = sf.throttles[nseg * 3 - 3 - 3 * i : nseg * 3 - 3 * i]
         throttles_bck.append(throttles)

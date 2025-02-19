@@ -87,8 +87,8 @@ class direct_pl2pl_alpha:
         if high_fidelity:
             self.leg = _pk.leg.sims_flanagan_hf_alpha()
         else:
-            raise("Warning: Not Implemented for sims_flanagan() yet")
-            # self.leg = _pk.leg.sims_flanagan()
+            self.leg = _pk.leg.sims_flanagan_alpha()
+            # raise("Warning: Not Implemented for sims_flanagan() yet")
             
         self.leg.ms = ms
         self.leg.max_thrust = max_thrust
@@ -320,6 +320,7 @@ class direct_pl2pl_alpha:
                 length=length,
                 show_gridpoints=show_gridpoints,
                 show_midpoints=show_midpoints,
+                use_alpha = True,
                 arrow_length_ratio=arrow_length_ratio,
                 **kwargs,
             )
