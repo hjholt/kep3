@@ -182,11 +182,9 @@ class direct_pl2pl_alpha:
 
         # 2 - We compute the constraints violations (mismatch+throttle)
         self._set_leg_from_x(x)  # set the leg
-        try:
-            ceq = self.leg.compute_mismatch_constraints()
-            cineq = self.leg.compute_throttle_constraints()
-        except:
-            print(self.leg.talphas, self.lef.tof)
+
+        ceq = self.leg.compute_mismatch_constraints()
+        cineq = self.leg.compute_throttle_constraints()
 
         # 3 - We add the departure vinfs constraint (quadratic)
         cineq = cineq + [

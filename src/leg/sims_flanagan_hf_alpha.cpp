@@ -468,8 +468,8 @@ std::array<double, 7> sims_flanagan_hf_alpha::compute_mismatch_constraints() con
         auto [status, min_h, max_h, nsteps, _1, _2] = m_tas.propagate_until(prop_seg_temp);
         // fmt::print("F {} time: {}\n", i, m_tas.get_time());   
 
-        if (m_tas.get_state()[6] < 0.5*(*m_rvmf.begin()+6) ) {
-            fmt::print("m_rvmf: {} {}\n", (*m_rvmf.begin()+6), m_tas.get_state()[6] );  
+        if (m_tas.get_state()[6] < 0.1*(*(m_rvmf.begin()+6l)) ) {
+            // fmt::print("m_rvmf: {} {}\n", (*(m_rvmf.begin()+6l)), m_tas.get_state()[6] );  
             break;
         }
 

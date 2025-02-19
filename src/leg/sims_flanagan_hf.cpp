@@ -444,6 +444,11 @@ std::array<double, 7> sims_flanagan_hf::compute_mismatch_constraints() const
         auto [status, min_h, max_h, nsteps, _1, _2] = m_tas.propagate_until((i + 1) * prop_seg_duration);
         // fmt::print("F {} time: {}\n", i, m_tas.get_time());   
 
+        if (m_tas.get_state()[6] < 0.1*(*(m_rvmf.begin()+6l)) ) {
+            // fmt::print("m_rvmf: {} {}\n", 0.5* (*(m_rvmf.begin()+6l)), m_tas.get_state()[6] );  
+            break;
+        }
+
         if (status != heyoka::taylor_outcome::time_limit) { // LCOV_EXCL_START
             fmt::print("thrust: [{}, {}, {}]\n", *(m_tas.get_pars_data()+2l), *(m_tas.get_pars_data() + 3l),
                        *(m_tas.get_pars_data() + 4l));
