@@ -69,6 +69,62 @@ std::vector<std::pair<expression, expression>> stark_dyn()
             prime(vy) = vydot, prime(vz) = vzdot, prime(m) = mdot};
 };
 
+// std::vector<std::pair<expression, expression>> stark_dyn() //RTN
+// {
+//     // The symbolic variables
+//     auto [x, y, z, vx, vy, vz, m] = make_vars("x", "y", "z", "vx", "vy", "vz", "m");
+
+//     // Renaming parameters
+//     const auto &mu = par[0];
+//     const auto &veff = par[1];
+//     const auto &[uR, uT, uN] = std::array{par[2], par[3], par[4]}; // RTN thrust components
+
+//     // The square of the radius
+//     const auto r = sqrt(sum({pow(x, 2.), pow(y, 2.), pow(z, 2.)}));
+//     const auto r2 = r * r;
+
+//     // Compute unit vectors for RTN frame
+//     const auto R_hat = std::array{x / r, y / r, z / r}; // Radial unit vector
+
+//     // Compute angular momentum vector h = r × v
+//     const auto hx = y * vz - z * vy;
+//     const auto hy = z * vx - x * vz;
+//     const auto hz = x * vy - y * vx;
+
+//     // Compute N_hat (Normal unit vector)
+//     const auto h_norm = sqrt(pow(hx, 2.) + pow(hy, 2.) + pow(hz, 2.));
+//     const auto N_hat = std::array{hx / h_norm, hy / h_norm, hz / h_norm};
+
+//     // Compute T_hat (Transverse unit vector) using T = N × R
+//     const auto Tx = N_hat[1] * R_hat[2] - N_hat[2] * R_hat[1];
+//     const auto Ty = N_hat[2] * R_hat[0] - N_hat[0] * R_hat[2];
+//     const auto Tz = N_hat[0] * R_hat[1] - N_hat[1] * R_hat[0];
+//     const auto T_hat = std::array{Tx, Ty, Tz};
+
+//     // Convert thrust components from RTN to inertial frame
+//     const auto ux = uR * R_hat[0] + uT * T_hat[0] + uN * N_hat[0];
+//     const auto uy = uR * R_hat[1] + uT * T_hat[1] + uN * N_hat[1];
+//     const auto uz = uR * R_hat[2] + uT * T_hat[2] + uN * N_hat[2];
+
+//     // The thrust magnitude
+//     const auto u_norm = sqrt(sum({pow(ux, 2.), pow(uy, 2.), pow(uz, 2.)}));
+
+//     // The Equations of Motion
+//     const auto xdot = vx;
+//     const auto ydot = vy;
+//     const auto zdot = vz;
+//     const auto vxdot = -mu * pow(r2, -3. / 2) * x + ux / m;
+//     const auto vydot = -mu * pow(r2, -3. / 2) * y + uy / m;
+//     const auto vzdot = -mu * pow(r2, -3. / 2) * z + uz / m;
+
+//     // Avoid singularity at u_norm = 0
+//     const auto mdot = select(eq(u_norm, 0.), 0., -u_norm / veff);
+
+//     return {prime(x) = xdot,   prime(y) = ydot,   prime(z) = zdot, prime(vx) = vxdot,
+//             prime(vy) = vydot, prime(vz) = vzdot, prime(m) = mdot};
+// };
+
+
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 std::mutex ta_stark_mutex;
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)

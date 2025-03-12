@@ -340,6 +340,7 @@ class direct_pl2pl:
         # Making the axis
         if ax is None:
             ax = _pk.plot.make_3Daxis(figsize=(7, 7))
+            
         rs, _ = sf.rvs
         rf, _ = sf.rvf
         ax.scatter(rs[0] / _pk.AU, rs[1] / units, rs[2] / units, c="k", s=20)
