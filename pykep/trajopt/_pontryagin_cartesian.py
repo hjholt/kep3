@@ -40,6 +40,7 @@ class pontryagin_cartesian_mass:
         TIME=_pk.YEAR2DAY * _pk.DAY2SEC,
         MASS=1500,
         with_gradient=False,
+        omega=0,
     ):
         r"""pykep.trajopt.pontryagin_cartesian(start=default, target=default, tof=250, mu=1.32712440018e+20, eps=1e-4, T_max=0.6, Isp=3000, m0=1500, L=1.495978707e+11, TIME=31557600.0, MASS=1500, with_gradient=False)
 
@@ -78,6 +79,8 @@ class pontryagin_cartesian_mass:
         self.c1 = T_max / (MASS * ACC)
         self.c2 = (Isp * _pk.G0) / VEL
 
+        self.omega = omega * TIME
+
         self.posvel0 = [[it / L for it in posvel0[0]], [it / VEL for it in posvel0[1]]]
         self.posvelf = [[it / L for it in posvelf[0]], [it / VEL for it in posvelf[1]]]
 
@@ -106,6 +109,7 @@ class pontryagin_cartesian_mass:
         self.ta.pars[2] = self.c2
         self.ta.pars[3] = self.eps
         self.ta.pars[4] = x[7]
+        self.ta.pars[5] = self.omega
         self.ta.time = 0.0
 
         # And initial conditions
@@ -121,6 +125,7 @@ class pontryagin_cartesian_mass:
         self.ta_var.pars[2] = self.c2
         self.ta_var.pars[3] = self.eps
         self.ta_var.pars[4] = x[7]
+        self.ta_var.pars[5] = self.omega
         self.ta_var.time = 0.0
 
         # And initial conditions
