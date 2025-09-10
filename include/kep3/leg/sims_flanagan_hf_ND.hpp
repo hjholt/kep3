@@ -45,10 +45,15 @@ public:
     // Backwards-compatible constructor with rv and m states separately
     sims_flanagan_hf_ND(const std::array<std::array<double, 3>, 2> &rvs, double ms, const std::vector<double> &throttles,
                      const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof, double max_thrust,
-                     double isp, double mu, double cut = 0.5, double tol = 1e-16);
+                     double isp_g0, double mu,
+                     const heyoka::taylor_adaptive<double> &tas,
+                     const heyoka::taylor_adaptive<double> &tas_var,
+                     double cut = 0.5, double tol = 1e-16);
     // Constructor with rvm states
     sims_flanagan_hf_ND(const std::array<double, 7> &rvms, const std::vector<double> &throttles,
-                     const std::array<double, 7> &rvmf, double tof, double max_thrust, double isp, double mu,
+                     const std::array<double, 7> &rvmf, double tof, double max_thrust, double isp_g0, double mu,
+                     const heyoka::taylor_adaptive<double> &tas,
+                     const heyoka::taylor_adaptive<double> &tas_var,
                      double cut, double tol = 1e-16);
 
     // Setters
@@ -60,7 +65,7 @@ public:
     void set_rvf(const std::array<std::array<double, 3>, 2> &rv);
     void set_mf(double mass);
     void set_max_thrust(double max_thrust);
-    void set_isp(double isp);
+    void set_isp_g0(double isp_g0);
     void set_mu(double mu);
     void set_cut(double cut);
     void set_tol(double tol);
@@ -70,11 +75,11 @@ public:
     // void set_tas_var(const heyoka::taylor_adaptive<double> &tas_var);
     // Backwards-compatible setting function with rv and m states separately
     void set(const std::array<std::array<double, 3>, 2> &rvs, double ms, const std::vector<double> &throttles,
-             const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof, double max_thrust, double isp,
+             const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof, double max_thrust, double isp_g0,
              double mu, double cut = 0.5, double tol = 1e-16);
     // Setting function with rvm states
     void set(const std::array<double, 7> &rvms, const std::vector<double> &throttles, const std::array<double, 7> &rvmf,
-             double tof, double max_thrust, double isp, double mu, double cut = 0.5, double tol = 1e-16);
+             double tof, double max_thrust, double isp_g0, double mu, double cut = 0.5, double tol = 1e-16);
     void set(const std::array<double, 7> &rvms, const std::vector<double> &throttles, const std::array<double, 7> &rvmf,
              double time_of_flight);
 
@@ -86,7 +91,7 @@ public:
     [[nodiscard]] const std::vector<double> &get_throttles() const;
     [[nodiscard]] double get_mf() const;
     [[nodiscard]] double get_max_thrust() const;
-    [[nodiscard]] double get_isp() const;
+    [[nodiscard]] double get_isp_g0() const;
     [[nodiscard]] double get_mu() const;
     [[nodiscard]] double get_cut() const;
     [[nodiscard]] double get_tol() const;
@@ -143,7 +148,7 @@ private:
         ar & m_tof;
         ar & m_rvmf;
         ar & m_max_thrust;
-        ar & m_isp;
+        ar & m_isp_g0;
         ar & m_mu;
         ar & m_cut;
         ar & m_tol;
@@ -168,7 +173,7 @@ private:
     // Spacecraft propulsion system maximum thrust.
     double m_max_thrust{1.};
     // Spacecraft propulsion system specific impulse.
-    double m_isp{1.};
+    double m_isp_g0{1.};
     // Spacecraft gravitational parameter.
     double m_mu{1.};
     // The cut parameter

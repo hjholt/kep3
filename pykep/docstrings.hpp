@@ -201,6 +201,8 @@ std::string leg_sf_hf_tas_var_docstring();
 // Alpha
 std::string leg_sf_hf_alpha_docstring();
 std::string leg_sf_hf_talphas_docstring();
+// ND
+std::string leg_sf_hf_isp_g0_docstring();
 
 
 } // namespace pykep

@@ -934,6 +934,138 @@ PYBIND11_MODULE(core, m) // NOLINT
     sims_flanagan_hf.def_property_readonly("nseg_bck", &kep3::leg::sims_flanagan_hf::get_nseg_bck,
                                            pykep::leg_sf_hf_nseg_bck_docstring().c_str());
 
+    // Exposing the sims_flanagan_hf_ND leg
+    py::class_<kep3::leg::sims_flanagan_hf_ND> sims_flanagan_hf_ND(m, "_sims_flanagan_hf_ND",
+                                                             pykep::leg_sf_hf_docstring().c_str());
+    sims_flanagan_hf_ND.def(
+        py::init<const std::array<std::array<double, 3>, 2> &, double, std::vector<double>,
+                 const std::array<std::array<double, 3>, 2> &, double, double, double, double, double,
+                 const heyoka::taylor_adaptive<double>,
+                 const heyoka::taylor_adaptive<double>,
+                 double>(),
+        py::arg("rvs") = std::array<std::array<double, 3>, 2>{{{1., 0, 0.}, {0., 1., 0.}}}, py::arg("ms") = 1.,
+        py::arg("throttles") = std::vector<double>{0, 0, 0, 0, 0, 0},
+        py::arg("rvf") = std::array<std::array<double, 3>, 2>{{{0., 1., 0.}, {-1., 0., 0.}}}, py::arg("mf") = 1.,
+        py::arg("tof") = kep3::pi / 2, py::arg("max_thrust") = 1., py::arg("isp_g0") = 1., py::arg("mu") = 1,
+        py::arg("tas") = kep3::ta::get_ta_stark(1e-16),
+        py::arg("tas_var") = kep3::ta::get_ta_stark_var(1e-16),
+        py::arg("cut") = 0.5);
+    // repr().
+    sims_flanagan_hf_ND.def("__repr__", &pykep::ostream_repr<kep3::leg::sims_flanagan_hf_ND>);
+    // Copy and deepcopy.
+    sims_flanagan_hf_ND.def("__copy__", &pykep::generic_copy_wrapper<kep3::leg::sims_flanagan_hf_ND>);
+    sims_flanagan_hf_ND.def("__deepcopy__", &pykep::generic_deepcopy_wrapper<kep3::leg::sims_flanagan_hf_ND>);
+    // Pickle support.
+    sims_flanagan_hf_ND.def(py::pickle(&pykep::pickle_getstate_wrapper<kep3::leg::sims_flanagan_hf_ND>,
+                                    &pykep::pickle_setstate_wrapper<kep3::leg::sims_flanagan_hf_ND>));
+    // The rest
+    sims_flanagan_hf_ND.def_property(
+        "throttles", &kep3::leg::sims_flanagan_hf_ND::get_throttles,
+        [](kep3::leg::sims_flanagan_hf_ND &sf, const std::vector<double> &throttles) {
+            return sf.set_throttles(throttles);
+        },
+        pykep::leg_sf_hf_throttles_docstring().c_str());
+
+#define PYKEP3_EXPOSE_LEG_SF_HF_ND_ATTRIBUTES(name)                                                                       \
+    sims_flanagan_hf_ND.def_property(#name, &kep3::leg::sims_flanagan_hf_ND::get_##name,                                     \
+                                  &kep3::leg::sims_flanagan_hf_ND::set_##name,                                            \
+                                  pykep::leg_sf_hf_##name##_docstring().c_str());
+    PYKEP3_EXPOSE_LEG_SF_HF_ND_ATTRIBUTES(rvs);
+    PYKEP3_EXPOSE_LEG_SF_HF_ND_ATTRIBUTES(rvms);
+    PYKEP3_EXPOSE_LEG_SF_HF_ND_ATTRIBUTES(ms);
+    PYKEP3_EXPOSE_LEG_SF_HF_ND_ATTRIBUTES(rvf);
+    PYKEP3_EXPOSE_LEG_SF_HF_ND_ATTRIBUTES(rvmf);
+    PYKEP3_EXPOSE_LEG_SF_HF_ND_ATTRIBUTES(mf);
+    PYKEP3_EXPOSE_LEG_SF_HF_ND_ATTRIBUTES(tof);
+    PYKEP3_EXPOSE_LEG_SF_HF_ND_ATTRIBUTES(max_thrust);
+    PYKEP3_EXPOSE_LEG_SF_HF_ND_ATTRIBUTES(isp_g0);
+    PYKEP3_EXPOSE_LEG_SF_HF_ND_ATTRIBUTES(mu);
+    // PYKEP3_EXPOSE_LEG_SF_HF_ND_ATTRIBUTES(tas);
+    // PYKEP3_EXPOSE_LEG_SF_HF_ND_ATTRIBUTES(tas_var);
+    PYKEP3_EXPOSE_LEG_SF_HF_ND_ATTRIBUTES(cut);
+    PYKEP3_EXPOSE_LEG_SF_HF_ND_ATTRIBUTES(tol);
+
+#undef PYKEP3_EXPOSE_LEG_SF_HF_ND_ATTRIBUTES
+
+    sims_flanagan_hf_ND.def("compute_mismatch_constraints", &kep3::leg::sims_flanagan_hf_ND::compute_mismatch_constraints,
+                         pykep::leg_sf_hf_mc_docstring().c_str());
+    sims_flanagan_hf_ND.def("compute_throttle_constraints", &kep3::leg::sims_flanagan_hf_ND::compute_throttle_constraints,
+                         pykep::leg_sf_hf_tc_docstring().c_str());
+    sims_flanagan_hf_ND.def(
+        "compute_mc_grad",
+        [](const kep3::leg::sims_flanagan_hf_ND &leg) {
+            auto tc_cpp = leg.compute_mc_grad();
+            // Lets transfer ownership to python of the three
+            std::array<double, 49> &rs_addr = std::get<0>(tc_cpp);
+            std::array<double, 49> &rf_addr = std::get<1>(tc_cpp);
+            std::vector<double> &th_addr = std::get<2>(tc_cpp);
+
+            // We create three separate capsules for the py::array_t to manage ownership change.
+            auto vec_ptr_rs = std::make_unique<std::array<double, 49>>(rs_addr);
+            py::capsule vec_caps_rs(vec_ptr_rs.get(), [](void *ptr) {
+                std::unique_ptr<std::array<double, 49>> vptr(static_cast<std::array<double, 49> *>(ptr));
+            });
+            auto vec_ptr_rf = std::make_unique<std::array<double, 49>>(rf_addr);
+            py::capsule vec_caps_rf(vec_ptr_rf.get(), [](void *ptr) {
+                std::unique_ptr<std::array<double, 49>> vptr(static_cast<std::array<double, 49> *>(ptr));
+            });
+            auto vec_ptr_th = std::make_unique<std::vector<double>>(th_addr);
+            py::capsule vec_caps_th(vec_ptr_th.get(), [](void *ptr) {
+                std::unique_ptr<std::vector<double>> vptr(static_cast<std::vector<double> *>(ptr));
+            });
+            // NOTE: at this point, the capsules have been created successfully (including
+            // the registration of the destructor). We can thus release ownership from vec_ptr_xx,
+            // as now the capsules are responsible for destroying its contents.
+            auto *ptr_rs = vec_ptr_rs.release();
+            auto *ptr_rf = vec_ptr_rf.release();
+            auto *ptr_th = vec_ptr_th.release();
+            auto rs_python = py::array_t<double>(
+                py::array::ShapeContainer{static_cast<py::ssize_t>(7), static_cast<py::ssize_t>(7)}, // shape
+                ptr_rs->data(), std::move(vec_caps_rs));
+            auto rf_python = py::array_t<double>(
+                py::array::ShapeContainer{static_cast<py::ssize_t>(7), static_cast<py::ssize_t>(7)}, // shape
+                ptr_rf->data(), std::move(vec_caps_rf));
+            auto th_python = py::array_t<double>(
+                py::array::ShapeContainer{static_cast<py::ssize_t>(7),
+                                          static_cast<py::ssize_t>(leg.get_nseg() * 3 + 1u)}, // shape
+                ptr_th->data(), std::move(vec_caps_th));
+            return py::make_tuple(rs_python, rf_python, th_python);
+        },
+        pykep::leg_sf_hf_mc_grad_docstring().c_str());
+    sims_flanagan_hf_ND.def(
+        "compute_tc_grad",
+        [](const kep3::leg::sims_flanagan_hf_ND &leg) {
+            std::vector<double> tc_cpp = leg.compute_tc_grad();
+            // Lets transfer ownership to python
+            std::vector<double> &tc_cpp_addr = tc_cpp;
+            // We create a capsule for the py::array_t to manage ownership change.
+            auto vec_ptr = std::make_unique<std::vector<double>>(tc_cpp_addr);
+            py::capsule vec_caps(vec_ptr.get(), [](void *ptr) {
+                std::unique_ptr<std::vector<double>> vptr(static_cast<std::vector<double> *>(ptr));
+            });
+            // NOTE: at this point, the capsule has been created successfully (including
+            // the registration of the destructor). We can thus release ownership from vec_ptr,
+            // as now the capsule is responsible for destroying its contents. If the capsule constructor
+            // throws, the destructor function is not registered/invoked, and the destructor
+            // of vec_ptr will take care of cleaning up.
+            auto *ptr = vec_ptr.release();
+
+            auto tc_python
+                = py::array_t<double>(py::array::ShapeContainer{static_cast<py::ssize_t>(leg.get_nseg()),
+                                                                static_cast<py::ssize_t>(leg.get_nseg() * 3)}, // shape
+                                      ptr->data(), std::move(vec_caps));
+            return tc_python;
+        },
+        pykep::leg_sf_hf_tc_grad_docstring().c_str());
+    sims_flanagan_hf_ND.def("get_state_history", &kep3::leg::sims_flanagan_hf_ND::get_state_history,
+                         pykep::leg_sf_hf_get_state_history_docstring().c_str());
+    sims_flanagan_hf_ND.def_property_readonly("nseg", &kep3::leg::sims_flanagan_hf_ND::get_nseg,
+                                           pykep::leg_sf_hf_nseg_docstring().c_str());
+    sims_flanagan_hf_ND.def_property_readonly("nseg_fwd", &kep3::leg::sims_flanagan_hf_ND::get_nseg_fwd,
+                                           pykep::leg_sf_hf_nseg_fwd_docstring().c_str());
+    sims_flanagan_hf_ND.def_property_readonly("nseg_bck", &kep3::leg::sims_flanagan_hf_ND::get_nseg_bck,
+                                           pykep::leg_sf_hf_nseg_bck_docstring().c_str());
+
     // Exposing the sims_flanagan_hf_alpha leg
     py::class_<kep3::leg::sims_flanagan_hf_alpha> sims_flanagan_hf_alpha(m, "_sims_flanagan_hf_alpha",
                                                                          pykep::leg_sf_hf_alpha_docstring().c_str());

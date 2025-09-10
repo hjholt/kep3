@@ -3084,6 +3084,10 @@ std::string leg_sf_hf_isp_docstring()
 {
     return "Specific impulse of the propulasion system";
 };
+std::string leg_sf_hf_isp_g0_docstring()
+{
+    return "Exhaust velocity of spacecraft propulsion system (Isp * g0)";
+};
 std::string leg_sf_hf_mu_docstring()
 {
     return "Central body gravitational parameter.";
