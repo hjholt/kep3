@@ -36,7 +36,7 @@ using heyoka::var_ode_sys;
 
 namespace kep3::ta
 {
-std::tuple<std::vector<std::pair<expression, expression>>, expression, expression> expression_factory()
+std::tuple<std::vector<std::pair<expression, expression>>, expression, expression> controlled_expression_factory()
 {
     // The symbolic variables.
     auto [x, y, z, vx, vy, vz, m] = make_vars("x", "y", "z", "vx", "vy", "vz", "m");
@@ -80,17 +80,17 @@ std::tuple<std::vector<std::pair<expression, expression>>, expression, expressio
 
 std::vector<std::pair<expression, expression>> stark_cr3bp_dyn()
 {
-    return std::get<0>(expression_factory());
+    return std::get<0>(controlled_expression_factory());
 }
 
-heyoka::expression cr3bp_effective_potential_U()
+heyoka::expression stark_cr3bp_effective_potential_U()
 {
-    return std::get<1>(expression_factory());
+    return std::get<1>(controlled_expression_factory());
 }
 
-heyoka::expression cr3bp_jacobi_C()
+heyoka::expression stark_cr3bp_jacobi_C()
 {
-    return std::get<2>(expression_factory());
+    return std::get<2>(controlled_expression_factory());
 }
 
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
