@@ -20,6 +20,9 @@ del _version
 
 import os as _os
 
+# Import heyoka to register converters
+import heyoka as hy
+
 if _os.name == "posix":
     # NOTE: on some platforms Python by default opens extensions
     # with the RTLD_LOCAL flag, which creates problems because
@@ -84,3 +87,5 @@ mim_from_hop = trajopt.mim_from_hop # we want mim also in the same namespace as 
 
 # We import the unit test submodule
 from . import test
+
+del hy
