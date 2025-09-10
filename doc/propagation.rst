@@ -61,6 +61,16 @@ zero_hold_kep
 
 .. autofunction:: zero_hold_kep_dyn 
 
+Stark CR3BP
+~~~~~~~~~~~~ 
+.. currentmodule:: pykep.ta
+
+.. autofunction:: get_stark_cr3bp
+
+.. autofunction:: get_stark_cr3bp_var
+
+.. autofunction:: stark_cr3bp_dyn 
+
 
 Circular Restricted Three Body Problem
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

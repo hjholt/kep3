@@ -377,6 +377,24 @@ PYBIND11_MODULE(core, m) // NOLINT
         },
         py::arg("tol"), pykep::get_zero_hold_kep_var_docstring().c_str());
     ta.def("zero_hold_kep_dyn", &kep3::ta::zero_hold_kep_dyn, pykep::zero_hold_kep_dyn_docstring().c_str());
+    // Stark CR3BP
+    ta.def(
+        "get_stark_cr3bp",
+        [](double tol) {
+            auto ta_cache = kep3::ta::get_ta_stark_cr3bp(tol);
+            heyoka::taylor_adaptive<double> ta(ta_cache);
+            return ta;
+        },
+        py::arg("tol"), pykep::get_stark_cr3bp_docstring().c_str());
+    ta.def(
+        "get_stark_cr3bp_var",
+        [](double tol) {
+            auto ta_cache = kep3::ta::get_ta_stark_cr3bp_var(tol);
+            heyoka::taylor_adaptive<double> ta(ta_cache);
+            return ta;
+        },
+        py::arg("tol"), pykep::get_stark_cr3bp_var_docstring().c_str());
+    ta.def("stark_cr3bp_dyn", &kep3::ta::stark_cr3bp_dyn, pykep::stark_cr3bp_dyn_docstring().c_str());
     // CR3BP
     // Add function to submodule
     ta.def("cr3bp_jacobi_C", &kep3::ta::cr3bp_jacobi_C, pykep::cr3bp_jacobi_C_docstring().c_str());

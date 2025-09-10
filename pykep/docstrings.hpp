@@ -103,6 +103,9 @@ std::string udpla_vsop2013_docstring();
 std::string get_zero_hold_kep_docstring();
 std::string get_zero_hold_kep_var_docstring();
 std::string zero_hold_kep_dyn_docstring();
+std::string get_stark_cr3bp_docstring();
+std::string get_stark_cr3bp_var_docstring();
+std::string stark_cr3bp_dyn_docstring();
 std::string get_cr3bp_docstring();
 std::string get_cr3bp_var_docstring();
 std::string cr3bp_dyn_docstring();
@@ -202,7 +205,7 @@ std::string leg_sf_hf_tas_var_docstring();
 std::string leg_sf_hf_alpha_docstring();
 std::string leg_sf_hf_talphas_docstring();
 // ND
-std::string leg_sf_hf_isp_g0_docstring();
+std::string leg_sf_hf_veff_docstring();
 
 
 } // namespace pykep

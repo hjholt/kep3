@@ -1897,6 +1897,107 @@ Returns:
 )";
 }
 
+std::string get_stark_cr3bp_docstring()
+{
+    return R"(ta.get_stark_cr3bp(tol)
+
+Returns a Taylor adaptive propagator (Heyoka) for the Stark problem in CR3BP retreiving one from a global cache and making a copy. 
+
+In `pykep`, abusing a term well established in electrodynamics, 
+this is the initial value problem of a fixed inertial thrust mass-varying spacecraft orbiting in the CR3BP.
+
+If the requested propagator was never created this will create it, else it will
+return the one from the global cache, thus avoiding jitting.
+
+The dynamics is that returned by :func:`~pykep.ta.stark_cr3bp_dyn`.
+
+Args:
+    *tol* (:class:`float`): the tolerance of the Taylor adaptive propagator. 
+
+Returns:
+    :class:`hy::taylor_adaptive`: The Taylor adaptive propagator.
+
+Examples:
+  >>> import pykep as pk
+  >>> ta = pk.ta.get_stark_cr3bp(tol = 1e-16)
+  >>> ta.time = 0.
+  >>> ta.state[:] = [1.,0.,0.,0.,1.,0.,1.]
+  >>> mu = 1. # mass ratio of primary and secondary
+  >>> veff = 1.
+  >>> thrust = [0., 0., 0.]
+  >>> tof = 1.
+  >>> ta.pars[:] = [mu, veff] + thrust
+  >>> ta.propagate_until(tof)
+)";
+}
+
+std::string get_stark_cr3bp_var_docstring()
+{
+    return R"(ta.get_stark_cr3bp_var(tol)
+
+Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the Stark problem in CR3BP retreiving one from a global cache and making a copy. 
+
+.. note:
+   Variations are only considered with repsect to initial conditions and the fixed inertial thurst.
+
+In `pykep`, abusing a term well established in electrodynamics, 
+this is the initial value problem of a fixed inertial thrust mass-varying spacecraft orbiting in CR3BP.
+
+The dynamics is that returned by :func:`~pykep.ta.stark_cr3bp_dyn`: and also used in :func:`~pykep.ta.get_stark_cr3bp`
+
+Args:
+    *tol* (:class:`float`): the tolerance of the Taylor adaptive propagator. 
+
+Returns:
+    :class:`hy::taylor_adaptive`: The Taylor adaptive propagator.
+
+Examples:
+  >>> import pykep as pk
+  >>> ta = pk.ta.get_stark_var(tol = 1e-16)
+  >>> ta.time = 0.
+  >>> ta.state[:] = [1.,0.,0.,0.,1.,0.,1.]
+  >>> mu = 1.
+  >>> veff = 1.
+  >>> thrust = [0., 0., 0.]
+  >>> tof = 1.
+  >>> ta.pars[:5] = [mu, veff] + thrust
+  >>> ta.propagate_until(tof)
+)";
+}
+
+std::string stark_cr3bp_dyn_docstring()
+{
+    return R"(stark_cr3bp_dyn()
+
+The dynamics of the Stark problem in circular restricted three body problem (CR3BP). 
+
+In `pykep`, abusing a term well established in electrodynamics, 
+this is the initial value problem of a fixed inertial thrust mass-varying spacecraft orbiting in the CR3BP.
+
+The parameter :math:`\mu` is defined as :math:`\frac{m_2}{m_1+m_2}` where :math:`m_2` is the mass of the
+secondary body (i.e. placed on the positive x axis). 
+
+The equations are non-dimensional with units :math:`L = r_{12}` (distance between the primaries), :math:`M = m_1 + m_2` (total system mass) and
+:math:`T = \sqrt{\frac{r_{12}^3}{m_1+m_2}}` (so that the angular velocity of the primaries is :math:`\omega = 1` 
+and the period of rotation between the primaries is :math:`2\pi`).
+
+.. math::
+   \left\{
+   \begin{array}{l}
+       \dot{\mathbf r} = \mathbf v \\
+       \dot v_x = 2v_y + x - (1 - \mu) \frac{x + \mu}{r_1^3} - \mu \frac{x + \mu - 1}{r_2^3} + \frac{ux}{m}\\
+       \dot v_y = -2 v_x + y - (1 - \mu) \frac{y}{r_1^3} - \mu \frac{y}{r_2^3} + \frac{uy}{m}\\
+       \dot v_z = -(1 - \mu) \frac{z}{r_1^3} - \mu \frac{z}{r_2^3} + \frac{uz}{m}
+       \dot m = - \frac{|\mathbf T|}{I_{sp} g_0}
+   \end{array}\right.
+
+where :math:`\mu, v_{eff} = I_{sp}g_0` and :math:`\mathbf u = [ux, uy, uz]` are parameters.
+
+Returns:
+    :class:`list` [ :class:`tuple` (:class:`hy::expression`, :class:`hy::expression` )]: The dynamics in the form [(x, dx), ...]
+)";
+}
+
 std::string get_bcp_docstring()
 {
     return R"(ta.get_cbp(tol)
@@ -3084,7 +3185,7 @@ std::string leg_sf_hf_isp_docstring()
 {
     return "Specific impulse of the propulasion system";
 };
-std::string leg_sf_hf_isp_g0_docstring()
+std::string leg_sf_hf_veff_docstring()
 {
     return "Exhaust velocity of spacecraft propulsion system (Isp * g0)";
 };

@@ -47,14 +47,14 @@ public:
     sims_flanagan_hf_nd(const std::array<std::array<double, 3>, 2> &rvs, double ms, const std::vector<double> &throttles,
                      const std::array<std::array<double, 3>, 2> &rvf, double mf, double tof, double max_thrust,
                      double veff, double mu,
-                     heyoka::taylor_adaptive<double> tas,
-                     heyoka::taylor_adaptive<double> tas_var,
+                     const heyoka::taylor_adaptive<double> tas,
+                     const heyoka::taylor_adaptive<double> tas_var,
                      double cut = 0.5, double tol = 1e-16);
     // Constructor with rvm states
     sims_flanagan_hf_nd(const std::array<double, 7> &rvms, const std::vector<double> &throttles,
                      const std::array<double, 7> &rvmf, double tof, double max_thrust, double veff, double mu,
-                     heyoka::taylor_adaptive<double> tas,
-                     heyoka::taylor_adaptive<double> tas_var,
+                     const heyoka::taylor_adaptive<double> tas,
+                     const heyoka::taylor_adaptive<double> tas_var,
                      double cut, double tol = 1e-16);
 
     // Setters
