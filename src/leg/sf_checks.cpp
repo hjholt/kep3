@@ -55,6 +55,12 @@ void _check_isp(double isp)
         throw std::domain_error("The specific impulse of a sims_flanagan leg is detected to be smaller than zero.");
     }
 }
+void _check_veff(double veff)
+{
+    if (veff < 0.) {
+        throw std::domain_error("The exhaust velocity of a sims_flanagan leg is detected to be smaller than zero.");
+    }
+}
 void _check_mu(double mu)
 {
     if (mu < 0.) {
@@ -103,6 +109,33 @@ void _sanity_checks(const std::vector<double> &throttles,
     _check_tof(tof);
     _check_max_thrust(max_thrust);
     _check_isp(isp);
+    _check_mu(mu);
+    _check_cut(cut);
+    _check_tol(tol);
+    _check_nseg(nseg, nseg_fwd, nseg_bck);
+}
+void _sanity_checks_nd(const std::vector<double> &throttles, 
+                    // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+                    double tof, double max_thrust, double veff, double mu,
+                    double cut, unsigned nseg, unsigned nseg_fwd, unsigned nseg_bck)
+{
+    _check_throttles(throttles);
+    _check_tof(tof);
+    _check_max_thrust(max_thrust);
+    _check_veff(veff);
+    _check_mu(mu);
+    _check_cut(cut);
+    _check_nseg(nseg, nseg_fwd, nseg_bck);
+}
+void _sanity_checks_nd(const std::vector<double> &throttles, 
+                    // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+                    double tof, double max_thrust, double veff, double mu,
+                    double cut, double tol, unsigned nseg, unsigned nseg_fwd, unsigned nseg_bck)
+{
+    _check_throttles(throttles);
+    _check_tof(tof);
+    _check_max_thrust(max_thrust);
+    _check_veff(veff);
     _check_mu(mu);
     _check_cut(cut);
     _check_tol(tol);
