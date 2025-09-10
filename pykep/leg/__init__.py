@@ -25,9 +25,9 @@ sims_flanagan_hf = _core._sims_flanagan_hf
 sims_flanagan_hf.__name__ = "sims_flanagan_hf"
 sims_flanagan_hf.__module__ = "leg"
 
-sims_flanagan_hf_ND = _core._sims_flanagan_hf_ND
-sims_flanagan_hf_ND.__name__ = "sims_flanagan_hf_ND"
-sims_flanagan_hf_ND.__module__ = "leg"
+sims_flanagan_hf_nd = _core._sims_flanagan_hf_nd
+sims_flanagan_hf_nd.__name__ = "sims_flanagan_hf_nd"
+sims_flanagan_hf_nd.__module__ = "leg"
 
 sims_flanagan_hf_alpha = _core._sims_flanagan_hf_alpha
 sims_flanagan_hf_alpha.__name__ = "sims_flanagan_hf_alpha"
