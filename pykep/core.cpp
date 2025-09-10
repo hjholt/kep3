@@ -25,6 +25,7 @@
 #include <kep3/leg/sims_flanagan.hpp>
 #include <kep3/leg/sims_flanagan_alpha.hpp>
 #include <kep3/leg/sims_flanagan_hf.hpp>
+#include <kep3/leg/sims_flanagan_hf_ND.hpp>
 #include <kep3/leg/sims_flanagan_hf_alpha.hpp>
 #include <kep3/planet.hpp>
 #include <kep3/zero_hold_kep_problem.hpp>
