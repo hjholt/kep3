@@ -21,6 +21,7 @@ kep3_DLL_PUBLIC void _check_throttles(const std::vector<double> &throttles);
 kep3_DLL_PUBLIC void _check_talphas(const std::vector<double> &talphas,unsigned nseg);
 kep3_DLL_PUBLIC void _check_max_thrust(double max_thrust);
 kep3_DLL_PUBLIC void _check_isp(double isp);
+kep3_DLL_PUBLIC void _check_veff(double isp);
 kep3_DLL_PUBLIC void _check_mu(double mu);
 kep3_DLL_PUBLIC void _check_cut(double cut);
 kep3_DLL_PUBLIC void _check_tol(double tol);
@@ -28,6 +29,10 @@ kep3_DLL_PUBLIC void _check_nseg(unsigned nseg, unsigned nseg_fwd, unsigned nseg
 kep3_DLL_PUBLIC void _sanity_checks(const std::vector<double> &throttles, double tof, double max_thrust, double isp, double mu,
                     double cut, unsigned nseg, unsigned nseg_fwd, unsigned nseg_bck);
 kep3_DLL_PUBLIC void _sanity_checks(const std::vector<double> &throttles, double tof, double max_thrust, double isp, double mu,
+                    double cut, double tol, unsigned nseg, unsigned nseg_fwd, unsigned nseg_bck);
+kep3_DLL_PUBLIC void _sanity_checks_nd(const std::vector<double> &throttles, double tof, double max_thrust, double veff, double mu,
+                    double cut, unsigned nseg, unsigned nseg_fwd, unsigned nseg_bck);
+kep3_DLL_PUBLIC void _sanity_checks_nd(const std::vector<double> &throttles, double tof, double max_thrust, double veff, double mu,
                     double cut, double tol, unsigned nseg, unsigned nseg_fwd, unsigned nseg_bck);
 kep3_DLL_PUBLIC void _sanity_checks_alpha(const std::vector<double> &throttles, const std::vector<double> &talphas, double tof, double max_thrust, double isp, double mu,
                     double cut, unsigned nseg, unsigned nseg_fwd, unsigned nseg_bck);
