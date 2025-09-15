@@ -7,8 +7,10 @@
 // Public License v. 2.0. If a copy of the MPL was not distributed
 // with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+#include "kep3/ta/cr3bp.hpp"
 #include <array>
 #include <cstddef>
+#include <heyoka/kw.hpp>
 #include <iterator>
 #include <numeric>
 #include <stdexcept>
@@ -39,6 +41,14 @@
 
 #include <heyoka/taylor.hpp>
 
+#include <heyoka/config.hpp>
+#include <heyoka/expression.hpp>
+#include <heyoka/math/log.hpp>
+#include <heyoka/math/pow.hpp>
+#include <heyoka/math/sqrt.hpp>
+#include <heyoka/math/sum.hpp>
+#include <heyoka/taylor.hpp>
+
 namespace kep3::leg
 {
 
@@ -50,10 +60,16 @@ sims_flanagan_hf_nd::sims_flanagan_hf_nd()
     kep3::leg::_sanity_checks_nd(m_throttles, m_tof, m_max_thrust, m_veff, m_mu, m_cut, m_tol, m_nseg, m_nseg_fwd,
                               m_nseg_bck);
 
+    // // Initialize m_tas and m_tas_var - DEFAULT = 2-body
+    // const heyoka::taylor_adaptive<double> ta_cache = kep3::ta::get_ta_stark(m_tol);
+    // m_tas = ta_cache;
+    // const heyoka::taylor_adaptive<double> ta_var_cache = kep3::ta::get_ta_stark_var(m_tol);
+    // m_tas_var = ta_var_cache;
+
     // Initialize m_tas and m_tas_var - DEFAULT = 2-body
-    const heyoka::taylor_adaptive<double> ta_cache = kep3::ta::get_ta_stark(m_tol);
+    const heyoka::taylor_adaptive<double> ta_cache = kep3::ta::get_ta_cr3bp(m_tol);
     m_tas = ta_cache;
-    const heyoka::taylor_adaptive<double> ta_var_cache = kep3::ta::get_ta_stark_var(m_tol);
+    const heyoka::taylor_adaptive<double> ta_var_cache = kep3::ta::get_ta_cr3bp_var(m_tol);
     m_tas_var = ta_var_cache;
 
     // We set mu and veff for the non variational
@@ -63,6 +79,25 @@ sims_flanagan_hf_nd::sims_flanagan_hf_nd()
     // ... and variational version of the integrator
     *(m_tas_var.get_pars_data()) = m_mu;
     *(m_tas_var.get_pars_data() + 1) = m_veff;
+
+    // COMPILED FUNCTION FOR ACCESS TO DYNAMICS
+    // Declare symbols for state and parameters
+    auto [x, y, z, vx, vy, vz, m]
+        = heyoka::make_vars("x","y","z","vx","vy","vz","m");
+    // Get dynamics from your Taylor integrator
+    auto dyn = m_tas.get_sys();
+    // Collect RHS expressions
+    std::vector<heyoka::expression> rhs;
+    rhs.reserve(dyn.size());
+    for (auto &row : dyn) {
+        rhs.push_back(row.second);
+    }
+    // Build compiled function, include parameters in var list
+    m_cf_dyn = heyoka::cfunc<double>(
+        {rhs[0], rhs[1], rhs[2], rhs[3], rhs[4], rhs[5]},   // outputs
+        {x, y, z, vx, vy, vz, m}      // inputs (state + params)
+    );
+
     // We copy the initial conditions for the variational equations
     std::copy(m_tas_var.get_state().begin() + 7, m_tas_var.get_state().end(), m_vars.begin());
 
@@ -105,6 +140,24 @@ sims_flanagan_hf_nd::sims_flanagan_hf_nd(const std::array<std::array<double, 3>,
     // ... and variational version of the integrator
     *(m_tas_var.get_pars_data()) = m_mu;
     *(m_tas_var.get_pars_data() + 1) = m_veff;
+
+    // COMPILED FUNCTION FOR ACCESS TO DYNAMICS
+    // Declare symbols for state and parameters
+    auto [x, y, z, vx, vy, vz, m]
+        = heyoka::make_vars("x","y","z","vx","vy","vz","m");
+    // Get dynamics from your Taylor integrator
+    auto dyn = m_tas.get_sys();
+    // Collect RHS expressions
+    std::vector<heyoka::expression> rhs;
+    rhs.reserve(dyn.size());
+    for (auto &row : dyn) {
+        rhs.push_back(row.second);
+    }
+    // Build compiled function, include parameters in var list
+    m_cf_dyn = heyoka::cfunc<double>(
+        {rhs[0], rhs[1], rhs[2], rhs[3], rhs[4], rhs[5]},   // outputs
+        {x, y, z, vx, vy, vz, m}      // inputs (state + params)
+    );
     
     // We copy the initial conditions for the variational equations
     std::copy(m_tas_var.get_state().begin() + 7, m_tas_var.get_state().end(), m_vars.begin());
@@ -155,6 +208,25 @@ sims_flanagan_hf_nd::sims_flanagan_hf_nd(const std::array<double, 7> &rvms, cons
     // ... and variational version of the integrator
     *(m_tas_var.get_pars_data()) = m_mu;
     *(m_tas_var.get_pars_data() + 1) = m_veff;
+    
+    // COMPILED FUNCTION FOR ACCESS TO DYNAMICS
+    // Declare symbols for state and parameters
+    auto [x, y, z, vx, vy, vz, m]
+        = heyoka::make_vars("x","y","z","vx","vy","vz","m");
+    // Get dynamics from your Taylor integrator
+    auto dyn = m_tas.get_sys();
+    // Collect RHS expressions
+    std::vector<heyoka::expression> rhs;
+    rhs.reserve(dyn.size());
+    for (auto &row : dyn) {
+        rhs.push_back(row.second);
+    }
+    // Build compiled function, include parameters in var list
+    m_cf_dyn = heyoka::cfunc<double>(
+        {rhs[0], rhs[1], rhs[2], rhs[3], rhs[4], rhs[5]},   // outputs
+        {x, y, z, vx, vy, vz, m}      // inputs (state + params)
+    );
+    
     // We copy the initial conditions for the variational equations
     std::copy(m_tas_var.get_state().begin() + 7, m_tas_var.get_state().end(), m_vars.begin());
 
@@ -456,17 +528,9 @@ std::array<double, 7> sims_flanagan_hf_nd::compute_mismatch_constraints() const
             // ... and integrate
             double norm_thrusts = std::sqrt(std::inner_product(m_thrusts.begin() + i * 3l, m_thrusts.begin() + 3 * (i + 1l), m_thrusts.begin() + i * 3l, 0.0));
             double mass_est = m_tas.get_state()[6] - norm_thrusts * prop_seg_duration / (m_veff);
-            double veff_est = norm_thrusts * prop_seg_duration / (- (m_tas.get_state()[6] - mass_est ));
-            // fmt::print("Estimating thrust {} m0 {} m_est {} \n", m_thrusts, m_tas.get_state()[6], mass_est);
-            if (mass_est < mass_thresh) { // Set Isp to zero
-                // fmt::print("Warning Mismatch: sf hf leg will run out of mass, setting Isp to inf. Mass estimate {} m0 {} T {} tof {}\n", mass_est, m_tas.get_state()[6], norm_thrusts, prop_seg_duration);
-                *(m_tas.get_pars_data()+1l) = veff_est;
-            } else {
+            // Only propagate if the mass doesn't go below mass_thresh (avoids nans in integration)
+            if (mass_est > mass_thresh) {
                 auto [status, min_h, max_h, nsteps, _1, _2] = m_tas.propagate_until((i + 1) * prop_seg_duration);
-                if (status != heyoka::taylor_outcome::time_limit) { // LCOV_EXCL_START
-                    fmt::print("mismatch fwd: {}\n", status);
-                    break;
-                } // LCOV_EXCL_STOP
             }
         }
     }
@@ -572,10 +636,28 @@ std::array<double, 7> sims_flanagan_hf_nd::get_state_derivative(const std::array
     auto throttle_to_thrust = [this](double throttle) { return throttle * get_max_thrust(); };
     std::transform(throttles.begin(), throttles.end(), thrusts.begin(), throttle_to_thrust);
 
+    // std::array<double, 7> dstatedt{};
+    // // The square of the radius
+    // std::array<double, 3> state_squared = {std::pow(state[0], 2.), std::pow(state[1], 2.), std::pow(state[2], 2.)};
+    // const auto r2 = std::accumulate(state_squared.begin(), state_squared.end(), 0.0);
+    // double veff = get_veff();
+
+    // // The throttle magnitude
+    // std::array<double, 3> thrusts_squared
+    //     = {std::pow(thrusts[0], 2.), std::pow(thrusts[1], 2.), std::pow(thrusts[2], 2.)};
+    // const auto u_norm = std::sqrt(std::accumulate(thrusts_squared.begin(), thrusts_squared.end(), 0.0));
+
+    // // The Equations of Motion
+    // dstatedt[0] = state[3];
+    // dstatedt[1] = state[4];
+    // dstatedt[2] = state[5];
+    // dstatedt[3] = -get_mu() * std::pow(r2, -3. / 2) * state[0] + thrusts[0] / state[6];
+    // dstatedt[4] = -get_mu() * std::pow(r2, -3. / 2) * state[1] + thrusts[1] / state[6];
+    // dstatedt[5] = -get_mu() * std::pow(r2, -3. / 2) * state[2] + thrusts[2] / state[6];
+    // dstatedt[6] = (u_norm != 0) ? -u_norm / veff : 0; // Conditional for if thrust is zero or not
+
+    // No hard coded dynamics
     std::array<double, 7> dstatedt{};
-    // The square of the radius
-    std::array<double, 3> state_squared = {std::pow(state[0], 2.), std::pow(state[1], 2.), std::pow(state[2], 2.)};
-    const auto r2 = std::accumulate(state_squared.begin(), state_squared.end(), 0.0);
     double veff = get_veff();
 
     // The throttle magnitude
@@ -583,13 +665,29 @@ std::array<double, 7> sims_flanagan_hf_nd::get_state_derivative(const std::array
         = {std::pow(thrusts[0], 2.), std::pow(thrusts[1], 2.), std::pow(thrusts[2], 2.)};
     const auto u_norm = std::sqrt(std::accumulate(thrusts_squared.begin(), thrusts_squared.end(), 0.0));
 
+    // Call compiled function
+    std::vector<double> input = {
+        state[0], state[1], state[2],
+        state[3], state[4], state[5],
+        state[6], // mass
+    };
+    // Call compiled function
+    std::vector<double> pars = {
+        get_mu(), get_veff(),      // parameters
+        thrusts[0], thrusts[1], thrusts[2]  // control inputs
+    };
+    // Allocate output (same size as number of RHS expressions you passed into cfunc)
+    std::vector<double> output(6);  
+    // Call the compiled function
+    m_cf_dyn(output, input, heyoka::kw::pars = pars);
+
     // The Equations of Motion
-    dstatedt[0] = state[3];
-    dstatedt[1] = state[4];
-    dstatedt[2] = state[5];
-    dstatedt[3] = -get_mu() * std::pow(r2, -3. / 2) * state[0] + thrusts[0] / state[6];
-    dstatedt[4] = -get_mu() * std::pow(r2, -3. / 2) * state[1] + thrusts[1] / state[6];
-    dstatedt[5] = -get_mu() * std::pow(r2, -3. / 2) * state[2] + thrusts[2] / state[6];
+    dstatedt[0] = output[0];
+    dstatedt[1] = output[1];
+    dstatedt[2] = output[2];
+    dstatedt[3] = output[3];
+    dstatedt[4] = output[4];
+    dstatedt[5] = output[5];
     dstatedt[6] = (u_norm != 0) ? -u_norm / veff : 0; // Conditional for if thrust is zero or not
 
     return dstatedt;
@@ -629,20 +727,10 @@ sims_flanagan_hf_nd::compute_all_gradients() const
         } else {
             // ... and integrate
             double norm_thrusts = std::sqrt(std::inner_product(m_thrusts.begin() + i * 3l, m_thrusts.begin() + 3 * (i + 1l), m_thrusts.begin() + i * 3l, 0.0));
-            double mass_est = m_tas.get_state()[6] - norm_thrusts * prop_seg_duration / (m_veff);
-            double veff_est = norm_thrusts * prop_seg_duration / (- (m_tas.get_state()[6] - mass_est ));
-            // fmt::print("Estimating thrust {} m0 {} m_est {} \n", m_thrusts, m_tas_var.get_state()[6], mass_est);
-            if (mass_est < mass_thresh) { // Set Isp to infinity
-                // fmt::print("Warning Gradient: sf hf leg will run out of mass, setting Isp to inf. Mass estimate {} m0 {} T {} tof {}\n", mass_est, m_tas_var.get_state()[6], norm_thrusts, prop_seg_duration);
-                *(m_tas_var.get_pars_data()+1l) = veff_est;
-            } else {
+            double mass_est = m_tas_var.get_state()[6] - norm_thrusts * prop_seg_duration / (m_veff);
+            // Only propagate if the mass doesn't go below mass_thresh (avoids nans in integration)
+            if (mass_est > mass_thresh) { // Set Isp to infinity
                 auto [status, min_h, max_h, nsteps, _1, _2] = m_tas_var.propagate_until((i + 1) * prop_seg_duration);
-                if (status != heyoka::taylor_outcome::time_limit) { // LCOV_EXCL_START
-                    // fmt::print("gradient fwd: {} {} {}\n", status, (i + 1) * prop_seg_duration, m_tas_var.get_state());
-                    break;
-                    // throw std::domain_error(
-                    //     "stark_problem: failure to reach the final time requested during a propagation."); 
-                } // LCOV_EXCL_STOP
             }
         }
 

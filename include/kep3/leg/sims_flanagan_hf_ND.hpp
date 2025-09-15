@@ -191,6 +191,9 @@ private:
     // Variational Taylor-adaptive integrator
     // m_tas_var needs to be mutable because the heyoka integrator needs to be modifiable
     mutable heyoka::taylor_adaptive<double> m_tas_var{};
+
+    // 🔑 Add this member
+    mutable heyoka::cfunc<double> m_cf_dyn{};
 };
 
 // Streaming operator for the class kep3::leg::sims_flanagan.
