@@ -91,8 +91,8 @@ class direct_cr3bp:
         if high_fidelity:
             self.leg = _pk.leg.sims_flanagan_hf_nd()
             # self.leg = _pk.leg.sims_flanagan_hf_nd(
-            #     tas = _pk.ta.get_stark_cr3bp(1e-16),
-            #     tas_var = _pk.ta.get_stark_cr3bp_var(1e-16)
+            #     tas = _pk.ta.get_zero_hold_cr3bp(1e-16),
+            #     tas_var = _pk.ta.get_zero_hold_cr3bp_var(1e-16)
             # )
         else:
             raise("No sf_lf implemented for cr3bp yet!")
@@ -113,7 +113,7 @@ class direct_cr3bp:
         # x_hy = _np.array([x, y, z, vx, vy, vz])
         # self.cf_dyn = _hy.cfunc([row[1] for row in dyn], x_hy.tolist())                 
 
-        tas = _pk.ta.get_stark_cr3bp(1e-16)
+        tas = _pk.ta.get_zero_hold_cr3bp(1e-16)
         dyn = tas.sys
         x, y, z, vx, vy, vz, m = _hy.make_vars("x", "y", "z", "vx", "vy", "vz", "m")
         x_hy = _np.array([x, y, z, vx, vy, vz, m])

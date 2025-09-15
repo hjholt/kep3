@@ -1897,11 +1897,11 @@ Returns:
 )";
 }
 
-std::string get_stark_cr3bp_docstring()
+std::string get_zero_hold_cr3bp_docstring()
 {
-    return R"(ta.get_stark_cr3bp(tol)
+    return R"(ta.get_zero_hold_cr3bp(tol)
 
-Returns a Taylor adaptive propagator (Heyoka) for the Stark problem in CR3BP retreiving one from a global cache and making a copy. 
+Returns a Taylor adaptive propagator (Heyoka) for the zero_hold problem in CR3BP retreiving one from a global cache and making a copy. 
 
 In `pykep`, abusing a term well established in electrodynamics, 
 this is the initial value problem of a fixed inertial thrust mass-varying spacecraft orbiting in the CR3BP.
@@ -1909,7 +1909,7 @@ this is the initial value problem of a fixed inertial thrust mass-varying spacec
 If the requested propagator was never created this will create it, else it will
 return the one from the global cache, thus avoiding jitting.
 
-The dynamics is that returned by :func:`~pykep.ta.stark_cr3bp_dyn`.
+The dynamics is that returned by :func:`~pykep.ta.zero_hold_cr3bp_dyn`.
 
 Args:
     *tol* (:class:`float`): the tolerance of the Taylor adaptive propagator. 
@@ -1919,7 +1919,7 @@ Returns:
 
 Examples:
   >>> import pykep as pk
-  >>> ta = pk.ta.get_stark_cr3bp(tol = 1e-16)
+  >>> ta = pk.ta.get_zero_hold_cr3bp(tol = 1e-16)
   >>> ta.time = 0.
   >>> ta.state[:] = [1.,0.,0.,0.,1.,0.,1.]
   >>> mu = 1. # mass ratio of primary and secondary
@@ -1931,11 +1931,11 @@ Examples:
 )";
 }
 
-std::string get_stark_cr3bp_var_docstring()
+std::string get_zero_hold_cr3bp_var_docstring()
 {
-    return R"(ta.get_stark_cr3bp_var(tol)
+    return R"(ta.get_zero_hold_cr3bp_var(tol)
 
-Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the Stark problem in CR3BP retreiving one from a global cache and making a copy. 
+Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the zero_hold problem in CR3BP retreiving one from a global cache and making a copy. 
 
 .. note:
    Variations are only considered with repsect to initial conditions and the fixed inertial thurst.
@@ -1943,7 +1943,7 @@ Returns a (order 1) variational Taylor adaptive propagator (Heyoka) for the Star
 In `pykep`, abusing a term well established in electrodynamics, 
 this is the initial value problem of a fixed inertial thrust mass-varying spacecraft orbiting in CR3BP.
 
-The dynamics is that returned by :func:`~pykep.ta.stark_cr3bp_dyn`: and also used in :func:`~pykep.ta.get_stark_cr3bp`
+The dynamics is that returned by :func:`~pykep.ta.zero_hold_cr3bp_dyn`: and also used in :func:`~pykep.ta.get_zero_hold_cr3bp`
 
 Args:
     *tol* (:class:`float`): the tolerance of the Taylor adaptive propagator. 
@@ -1953,7 +1953,7 @@ Returns:
 
 Examples:
   >>> import pykep as pk
-  >>> ta = pk.ta.get_stark_var(tol = 1e-16)
+  >>> ta = pk.ta.get_zero_hold_var(tol = 1e-16)
   >>> ta.time = 0.
   >>> ta.state[:] = [1.,0.,0.,0.,1.,0.,1.]
   >>> mu = 1.
@@ -1965,11 +1965,11 @@ Examples:
 )";
 }
 
-std::string stark_cr3bp_dyn_docstring()
+std::string zero_hold_cr3bp_dyn_docstring()
 {
-    return R"(stark_cr3bp_dyn()
+    return R"(zero_hold_cr3bp_dyn()
 
-The dynamics of the Stark problem in circular restricted three body problem (CR3BP). 
+The dynamics of the zero_hold problem in circular restricted three body problem (CR3BP). 
 
 In `pykep`, abusing a term well established in electrodynamics, 
 this is the initial value problem of a fixed inertial thrust mass-varying spacecraft orbiting in the CR3BP.

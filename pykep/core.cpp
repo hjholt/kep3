@@ -36,7 +36,7 @@
 #include <kep3/ta/pontryagin_cartesian.hpp>
 #include <kep3/ta/pontryagin_equinoctial.hpp>
 #include <kep3/ta/zero_hold_kep.hpp>
-#include <kep3/ta/stark_cr3bp.hpp>
+#include <kep3/ta/zero_hold_cr3bp.hpp>
 #include <kep3/udpla/keplerian.hpp>
 
 #include <pybind11/chrono.h>
@@ -377,24 +377,24 @@ PYBIND11_MODULE(core, m) // NOLINT
         },
         py::arg("tol"), pykep::get_zero_hold_kep_var_docstring().c_str());
     ta.def("zero_hold_kep_dyn", &kep3::ta::zero_hold_kep_dyn, pykep::zero_hold_kep_dyn_docstring().c_str());
-    // Stark CR3BP
+    // zero_hold CR3BP
     ta.def(
-        "get_stark_cr3bp",
+        "get_zero_hold_cr3bp",
         [](double tol) {
-            auto ta_cache = kep3::ta::get_ta_stark_cr3bp(tol);
+            auto ta_cache = kep3::ta::get_ta_zero_hold_cr3bp(tol);
             heyoka::taylor_adaptive<double> ta(ta_cache);
             return ta;
         },
-        py::arg("tol"), pykep::get_stark_cr3bp_docstring().c_str());
+        py::arg("tol"), pykep::get_zero_hold_cr3bp_docstring().c_str());
     ta.def(
-        "get_stark_cr3bp_var",
+        "get_zero_hold_cr3bp_var",
         [](double tol) {
-            auto ta_cache = kep3::ta::get_ta_stark_cr3bp_var(tol);
+            auto ta_cache = kep3::ta::get_ta_zero_hold_cr3bp_var(tol);
             heyoka::taylor_adaptive<double> ta(ta_cache);
             return ta;
         },
-        py::arg("tol"), pykep::get_stark_cr3bp_var_docstring().c_str());
-    ta.def("stark_cr3bp_dyn", &kep3::ta::stark_cr3bp_dyn, pykep::stark_cr3bp_dyn_docstring().c_str());
+        py::arg("tol"), pykep::get_zero_hold_cr3bp_var_docstring().c_str());
+    ta.def("zero_hold_cr3bp_dyn", &kep3::ta::zero_hold_cr3bp_dyn, pykep::zero_hold_cr3bp_dyn_docstring().c_str());
     // CR3BP
     // Add function to submodule
     ta.def("cr3bp_jacobi_C", &kep3::ta::cr3bp_jacobi_C, pykep::cr3bp_jacobi_C_docstring().c_str());
@@ -968,8 +968,8 @@ PYBIND11_MODULE(core, m) // NOLINT
         py::arg("throttles") = std::vector<double>{0, 0, 0, 0, 0, 0},
         py::arg("rvf") = std::array<std::array<double, 3>, 2>{{{0., 1., 0.}, {-1., 0., 0.}}}, py::arg("mf") = 1.,
         py::arg("tof") = kep3::pi / 2, py::arg("max_thrust") = 1., py::arg("veff") = 1., py::arg("mu") = 1,
-        py::arg("tas") = kep3::ta::get_ta_stark(1e-16),
-        py::arg("tas_var") = kep3::ta::get_ta_stark_var(1e-16),
+        py::arg("tas") = kep3::ta::get_ta_zero_hold(1e-16),
+        py::arg("tas_var") = kep3::ta::get_ta_zero_hold_var(1e-16),
         py::arg("cut") = 0.5);
     // repr().
     sims_flanagan_hf_nd.def("__repr__", &pykep::ostream_repr<kep3::leg::sims_flanagan_hf_nd>);

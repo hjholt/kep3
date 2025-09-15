@@ -36,8 +36,8 @@
 #include <kep3/leg/sf_checks.hpp>
 #include <kep3/leg/sims_flanagan_hf_nd.hpp>
 #include <kep3/linalg.hpp>
-#include <kep3/ta/stark.hpp>
-#include <kep3/ta/stark_cr3bp.hpp>
+#include <kep3/ta/zero_hold.hpp>
+#include <kep3/ta/zero_hold_cr3bp.hpp>
 
 #include <heyoka/taylor.hpp>
 
@@ -61,9 +61,9 @@ sims_flanagan_hf_nd::sims_flanagan_hf_nd()
                               m_nseg_bck);
 
     // // Initialize m_tas and m_tas_var - DEFAULT = 2-body
-    // const heyoka::taylor_adaptive<double> ta_cache = kep3::ta::get_ta_stark(m_tol);
+    // const heyoka::taylor_adaptive<double> ta_cache = kep3::ta::get_ta_zero_hold(m_tol);
     // m_tas = ta_cache;
-    // const heyoka::taylor_adaptive<double> ta_var_cache = kep3::ta::get_ta_stark_var(m_tol);
+    // const heyoka::taylor_adaptive<double> ta_var_cache = kep3::ta::get_ta_zero_hold_var(m_tol);
     // m_tas_var = ta_var_cache;
 
     // Initialize m_tas and m_tas_var - DEFAULT = 2-body
@@ -124,9 +124,9 @@ sims_flanagan_hf_nd::sims_flanagan_hf_nd(const std::array<std::array<double, 3>,
                               m_nseg_bck);
 
     // // Initialize m_tas and m_tas_var
-    // const heyoka::taylor_adaptive<double> ta_cache = kep3::ta::get_ta_stark(m_tol);
+    // const heyoka::taylor_adaptive<double> ta_cache = kep3::ta::get_ta_zero_hold(m_tol);
     // m_tas = ta_cache;
-    // const heyoka::taylor_adaptive<double> ta_var_cache = kep3::ta::get_ta_stark_var(m_tol);
+    // const heyoka::taylor_adaptive<double> ta_var_cache = kep3::ta::get_ta_zero_hold_var(m_tol);
     // m_tas_var = ta_var_cache;
 
     // Initialize m_tas and m_tas_var
@@ -192,9 +192,9 @@ sims_flanagan_hf_nd::sims_flanagan_hf_nd(const std::array<double, 7> &rvms, cons
                               m_nseg_bck);
 
     // // Initialize m_tas and m_tas_var
-    // const heyoka::taylor_adaptive<double> ta_cache = kep3::ta::get_ta_stark(m_tol);
+    // const heyoka::taylor_adaptive<double> ta_cache = kep3::ta::get_ta_zero_hold(m_tol);
     // m_tas = ta_cache;
-    // const heyoka::taylor_adaptive<double> ta_var_cache = kep3::ta::get_ta_stark_var(m_tol);
+    // const heyoka::taylor_adaptive<double> ta_var_cache = kep3::ta::get_ta_zero_hold_var(m_tol);
     // m_tas_var = ta_var_cache;
     
     // Initialize m_tas and m_tas_var
@@ -626,7 +626,7 @@ std::vector<double> sims_flanagan_hf_nd::compute_constraints() const
 //     return compute_constraints();
 // }
 
-// Return specific two-body 'stark' dynamics state derivative
+// Return specific two-body 'zero_hold' dynamics state derivative
 std::array<double, 7> sims_flanagan_hf_nd::get_state_derivative(const std::array<double, 7> &state,
                                                              const std::array<double, 3> &throttles) const
 {
@@ -770,7 +770,7 @@ sims_flanagan_hf_nd::compute_all_gradients() const
                 // fmt::print("gradient bck: {} {}\n", status, m_tof - (i + 1) * prop_seg_duration);
                 break;
                 // throw std::domain_error(
-                //     "stark_problem: failure to reach the final time requested during a propagation."); 
+                //     "zero_hold_problem: failure to reach the final time requested during a propagation."); 
             } // LCOV_EXCL_STOP
         }
         // Save the variational state variables to respective arrays
@@ -991,7 +991,7 @@ std::vector<std::vector<double>> sims_flanagan_hf_nd::get_state_history(unsigned
             fmt::print("reached time: {}\n", m_tas.get_time());
             fmt::print("requested time: {}\n", (i + 1) * prop_seg_duration);
             throw std::domain_error(
-                "stark_problem: failure to reach the final time requested during a propagation."); 
+                "zero_hold_problem: failure to reach the final time requested during a propagation."); 
         } // LCOV_EXCL_STOP
         output_per_seg[i] = output_states;
     }
@@ -1024,7 +1024,7 @@ std::vector<std::vector<double>> sims_flanagan_hf_nd::get_state_history(unsigned
             fmt::print("reached time: {}\n", m_tas.get_time());
             fmt::print("requested time: {}\n", (i + 1) * prop_seg_duration);
             throw std::domain_error(
-                "stark_problem: failure to reach the final time requested during a propagation."); 
+                "zero_hold_problem: failure to reach the final time requested during a propagation."); 
         } // LCOV_EXCL_STOP
         output_per_seg[m_nseg - 1 - i] = output_states;
     }
