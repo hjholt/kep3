@@ -191,6 +191,8 @@
 <li class="toctree-l2"><a class="reference internal" href="notebooks/approximations.html">Approximators for low-thrust transfers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/sims_flanagan_leg.html">The Sims-Flanagan trajectory leg</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/sims_flanagan_hf_leg.html">The Sims-Flanagan high-fidelity trajectory leg</a></li>
+
+
 <li class="toctree-l2"><a class="reference internal" href="notebooks/cr3bp_bcp.html">Inspecting the CR3BP and BCP</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/plotting.html">Plotting</a></li>
 </ul>
@@ -559,10 +561,6 @@ document.write(`
 </li>
       <li><a href="epoch.html#pykep.epoch.string_format">epoch.string_format (class in pykep)</a>
 </li>
-      <li><a href="elements.html#pykep.eq2ic">eq2ic() (in module pykep)</a>
-</li>
-      <li><a href="elements.html#pykep.eq2par">eq2par() (in module pykep)</a>
-</li>
       <li><a href="utils.html#pykep.eta2direct">eta2direct() (in module pykep)</a>
 </li>
       <li><a href="gym.html#pykep.trajopt.gym.eve_mga1dsm">eve_mga1dsm (pykep.trajopt.gym attribute)</a>
@@ -635,6 +633,10 @@ document.write(`
         <li><a href="udpla.html#pykep.udpla.tle.get_extra_info">(pykep.udpla.tle method)</a>
 </li>
       </ul></li>
+      <li><a href="propagation.html#pykep.ta.get_kep">get_kep() (in module pykep.ta)</a>
+</li>
+      <li><a href="propagation.html#pykep.ta.get_kep_var">get_kep_var() (in module pykep.ta)</a>
+</li>
       <li><a href="planet.html#pykep.planet.get_mu_central_body">get_mu_central_body() (pykep.planet method)</a>
 
       <ul>
@@ -673,6 +675,14 @@ document.write(`
 </li>
       <li><a href="leg.html#pykep.leg.sims_flanagan_hf.get_state_history">get_state_history() (pykep.leg.sims_flanagan_hf method)</a>
 </li>
+      <li><a href="propagation.html#pykep.ta.get_zero_hold_cr3bp">get_zero_hold_cr3bp() (in module pykep.ta)</a>
+</li>
+      <li><a href="propagation.html#pykep.ta.get_zero_hold_cr3bp_var">get_zero_hold_cr3bp_var() (in module pykep.ta)</a>
+</li>
+      <li><a href="propagation.html#pykep.ta.get_zero_hold_eq">get_zero_hold_eq() (in module pykep.ta)</a>
+</li>
+      <li><a href="propagation.html#pykep.ta.get_zero_hold_eq_var">get_zero_hold_eq_var() (in module pykep.ta)</a>
+</li>
       <li><a href="propagation.html#pykep.ta.get_zero_hold_kep">get_zero_hold_kep() (in module pykep.ta)</a>
 </li>
       <li><a href="propagation.html#pykep.ta.get_zero_hold_kep_var">get_zero_hold_kep_var() (in module pykep.ta)</a>
@@ -701,22 +711,16 @@ document.write(`
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="elements.html#pykep.ic2eq">ic2eq() (in module pykep)</a>
+      <li><a href="elements.html#pykep.ic2mee">ic2mee() (in module pykep)</a>
 </li>
       <li><a href="elements.html#pykep.ic2par">ic2par() (in module pykep)</a>
 </li>
-      <li><a href="utils.html#pykep.utils.inspect_spice_kernel">inspect_spice_kernel() (in module pykep.utils)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="utils.html#pykep.utils.inspect_spice_kernel">inspect_spice_kernel() (in module pykep.utils)</a>
+</li>
       <li><a href="planet.html#pykep.planet.is_">is_() (pykep.planet method)</a>
 </li>
-      <li><a href="leg.html#pykep.leg.sims_flanagan.isp">isp (pykep.leg.sims_flanagan property)</a>
-
-      <ul>
-        <li><a href="leg.html#pykep.leg.sims_flanagan_hf.isp">(pykep.leg.sims_flanagan_hf property)</a>
-</li>
-      </ul></li>
       <li><a href="lambert.html#pykep.lambert_problem.iters">iters (pykep.lambert_problem property)</a>
 </li>
   </ul></td>
@@ -741,6 +745,8 @@ document.write(`
 <h2 id="K">K</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="propagation.html#pykep.ta.kep_dyn">kep_dyn() (in module pykep.ta)</a>
+</li>
       <li><a href="udpla.html#pykep.udpla.keplerian">keplerian (class in pykep.udpla)</a>
 </li>
   </ul></td>
@@ -783,6 +789,10 @@ document.write(`
         <li><a href="leg.html#pykep.leg.sims_flanagan_hf.max_thrust">(pykep.leg.sims_flanagan_hf property)</a>
 </li>
       </ul></li>
+      <li><a href="elements.html#pykep.mee2ic">mee2ic() (in module pykep)</a>
+</li>
+      <li><a href="elements.html#pykep.mee2par">mee2par() (in module pykep)</a>
+</li>
       <li><a href="gym.html#pykep.trajopt.gym.messenger">messenger (pykep.trajopt.gym attribute)</a>
 </li>
       <li><a href="leg.html#pykep.leg.sims_flanagan.mf">mf (pykep.leg.sims_flanagan property)</a>
@@ -795,10 +805,10 @@ document.write(`
 </li>
       <li><a href="trajopt.html#pykep.trajopt.mga_1dsm">mga_1dsm (class in pykep.trajopt)</a>
 </li>
-      <li><a href="approximations.html#pykep.mim_from_hop">mim_from_hop() (in module pykep)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="approximations.html#pykep.mim_from_hop">mim_from_hop() (in module pykep)</a>
+</li>
       <li><a href="approximations.html#pykep.mima">mima() (in module pykep)</a>
 </li>
       <li><a href="approximations.html#pykep.mima2">mima2() (in module pykep)</a>
@@ -883,9 +893,9 @@ document.write(`
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="elements.html#pykep.par2eq">par2eq() (in module pykep)</a>
-</li>
       <li><a href="elements.html#pykep.par2ic">par2ic() (in module pykep)</a>
+</li>
+      <li><a href="elements.html#pykep.par2mee">par2mee() (in module pykep)</a>
 </li>
       <li><a href="propagation.html#pykep.ta.pc_dyn">pc_dyn() (in module pykep.ta)</a>
 </li>
@@ -1069,10 +1079,16 @@ document.write(`
 </li>
       <li><a href="lambert.html#pykep.lambert_problem.v1">v1 (pykep.lambert_problem property)</a>
 </li>
+      <li><a href="leg.html#pykep.leg.sims_flanagan.veff">veff (pykep.leg.sims_flanagan property)</a>
+
+      <ul>
+        <li><a href="leg.html#pykep.leg.sims_flanagan_hf.veff">(pykep.leg.sims_flanagan_hf property)</a>
+</li>
+        <li><a href="propagation.html#pykep.zero_hold_kep_problem.veff">(pykep.zero_hold_kep_problem property)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="propagation.html#pykep.zero_hold_kep_problem.veff">veff (pykep.zero_hold_kep_problem property)</a>
-</li>
       <li><a href="udpla.html#pykep.udpla.vsop2013">vsop2013 (class in pykep.udpla)</a>
 </li>
   </ul></td>
@@ -1089,12 +1105,16 @@ document.write(`
 <h2 id="Z">Z</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="propagation.html#pykep.ta.zero_hold_kep_dyn">zero_hold_kep_dyn() (in module pykep.ta)</a>
+      <li><a href="propagation.html#pykep.ta.zero_hold_cr3bp_dyn">zero_hold_cr3bp_dyn() (in module pykep.ta)</a>
 </li>
-      <li><a href="propagation.html#pykep.zero_hold_kep_problem">zero_hold_kep_problem (class in pykep)</a>
+      <li><a href="propagation.html#pykep.ta.zero_hold_eq_dyn">zero_hold_eq_dyn() (in module pykep.ta)</a>
+</li>
+      <li><a href="propagation.html#pykep.ta.zero_hold_kep_dyn">zero_hold_kep_dyn() (in module pykep.ta)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="propagation.html#pykep.zero_hold_kep_problem">zero_hold_kep_problem (class in pykep)</a>
+</li>
       <li><a href="anomalies.html#pykep.zeta2f">zeta2f() (in module pykep)</a>
 </li>
       <li><a href="anomalies.html#pykep.zeta2f_v">zeta2f_v() (in module pykep)</a>

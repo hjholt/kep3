@@ -43,6 +43,9 @@ Their variational version is also offered (at order one) as to be able to produc
 other useful quantities. Higher order variational equations can also be obtained directly using the available dynamics and 
 using `Heyoka <https://bluescarni.github.io/heyoka.py/index.html>`_ :cite:p:`biscaniheyoka1` syntax.
 
+Some ot the Taylor integrators are "zero hold" versions of a given dynamics, meaning that they
+consider a constant thrust vector in some frame and include the mass variation due to said thrust.
+
 Some of the Taylor adaptive integrators are associated to OCPs (Optimal Control Problems) of
 relevance to interplanetary flight. In particular they are born when applying Pontryagin 
 principle to dynamics of interests and result in two point boundary value problems (TPBVP).
@@ -51,19 +54,20 @@ the control, the Hamiltonian, the switching function, etc., are also provided.
 
 --------------------------------------------------------
 
-zero_hold_kep
-~~~~~~~~~~~~~
+Two Body Problem (Kepler)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. currentmodule:: pykep.ta
 
-.. autofunction:: get_zero_hold_kep
+.. autofunction:: get_kep
 
-.. autofunction:: get_zero_hold_kep_var
+.. autofunction:: get_kep_var
 
-.. autofunction:: zero_hold_kep_dyn 
+.. autofunction:: kep_dyn 
 
 
 Circular Restricted Three Body Problem
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. currentmodule:: pykep.ta
 
 .. autofunction:: get_cr3bp
 
@@ -80,14 +84,48 @@ Bicircular Problem
 
 Introduced by Simo' et al. in his '97 paper :cite:p:`simo1995bicircular`.
 
+.. currentmodule:: pykep.ta
+
 .. autofunction:: get_bcp
 
 .. autofunction:: get_bcp_var
 
 .. autofunction:: bcp_dyn 
 
+zero_hold_kep
+~~~~~~~~~~~~~
+.. currentmodule:: pykep.ta
+
+.. autofunction:: get_zero_hold_kep
+
+.. autofunction:: get_zero_hold_kep_var
+
+.. autofunction:: zero_hold_kep_dyn 
+
+zero_hold_eq
+~~~~~~~~~~~~~~~
+.. currentmodule:: pykep.ta
+
+.. autofunction:: get_zero_hold_eq
+
+.. autofunction:: get_zero_hold_eq_var
+
+.. autofunction:: zero_hold_eq_dyn 
+
+zero_hold_cr3bp
+~~~~~~~~~~~~~~~
+.. currentmodule:: pykep.ta
+
+.. autofunction:: get_zero_hold_cr3bp
+
+.. autofunction:: get_zero_hold_cr3bp_var
+
+.. autofunction:: zero_hold_cr3bp_dyn 
+
 Low-thrust Pontryagin Cartesian TPBVP
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. currentmodule:: pykep.ta
 
 .. autofunction:: get_pc
 
@@ -96,7 +134,9 @@ Low-thrust Pontryagin Cartesian TPBVP
 .. autofunction:: pc_dyn
 
 Low-thrust Pontryagin Equinoctial TPBVP
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. currentmodule:: pykep.ta
 
 .. autofunction:: get_peq
 
